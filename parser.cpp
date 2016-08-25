@@ -1,6 +1,53 @@
 #include <iostream>
 #include <string>
 
+class tree
+{
+	private:
+		void *nodeData;
+	public:
+		tree &leftNode;
+		tree &rightNode;
+		tree &parentNode = NULL;
+
+		tree(void &c)
+		{
+			nodeChar = c;
+		}
+
+		tree * addLeftNode(void &c)
+		{
+			tree *t = new tree(c);
+			t.parentNode = &this;
+			leftNode = &t;
+		}
+
+		tree * addRightNode(void &c)
+		{
+			tree *t = new tree(c);
+			t.parentNode = &this;
+			rightNode = &t;
+		}
+
+		void giveParent(tree *parent)
+		{
+			parentNode = parent;
+		}
+
+		int evaulate()
+		{
+			if(parentNode == NULL)
+			{
+				//perform acts of magic and wonderment
+				return 1;
+			} else
+			{
+				std::cout<<"not parent node, something wrong\n";
+				return 0; //dunno what to do for returning here
+			}
+		}
+};
+
 //Initially parser will only do the opperations: + - * / and ()
 void numberState(char x, bool *error)
 {
@@ -13,6 +60,7 @@ void symbolState(char x, bool *error)
 }
 
 int main(){
+	tree t;
 	std::string eq;
 	std::cout<<"enter equation less than 100 characters with no spaces\n";
 	std::cin>>eq;
