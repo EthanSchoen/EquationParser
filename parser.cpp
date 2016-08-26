@@ -4,28 +4,30 @@
 class tree
 {
 	private:
-		void *nodeData;
+		std::string nodeData;
 	public:
-		tree &leftNode;
-		tree &rightNode;
-		tree &parentNode = NULL;
+		tree leftNode;
+		tree rightNode;
+		tree &parentNode = 0;
 
-		tree(void &c)
+		tree(std::string s)
 		{
-			nodeChar = c;
+			nodeData = s;
+			&leftNode = 0;
+			&rightNode = 0;
 		}
 
-		tree * addLeftNode(void &c)
+		tree * addLeftNode(std::string s)
 		{
-			tree *t = new tree(c);
-			t.parentNode = &this;
+			tree *t = new tree(s);
+			t->parentNode = &this;
 			leftNode = &t;
 		}
 
-		tree * addRightNode(void &c)
+		tree * addRightNode(std::string s)
 		{
-			tree *t = new tree(c);
-			t.parentNode = &this;
+			tree *t = new tree(s);
+			t->parentNode = &this;//compiler said ->, learn why
 			rightNode = &t;
 		}
 
@@ -36,7 +38,7 @@ class tree
 
 		int evaulate()
 		{
-			if(parentNode == NULL)
+			if(parentNode == 0)
 			{
 				//perform acts of magic and wonderment
 				return 1;
@@ -60,7 +62,6 @@ void symbolState(char x, bool *error)
 }
 
 int main(){
-	tree t;
 	std::string eq;
 	std::cout<<"enter equation less than 100 characters with no spaces\n";
 	std::cin>>eq;
