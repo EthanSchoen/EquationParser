@@ -1,37 +1,40 @@
 #include <iostream>
 #include <string>
 
-class tree
+class Tree
 {
 	private:
 		std::string nodeData;
 	public:
-		tree leftNode;
-		tree rightNode;
-		tree &parentNode = 0;
+		Tree *leftNode;
+		Tree *rightNode;
+		Tree *parentNode;
 
-		tree(std::string s)
+		Tree(std::string s)
 		{
 			nodeData = s;
-			&leftNode = 0;
-			&rightNode = 0;
+			Tree *parentNode = 0;
+			Tree *leftNode = 0;
+			Tree *rightNode = 0;
 		}
 
-		tree * addLeftNode(std::string s)
+		Tree * addLeftNode(std::string s)
 		{
-			tree *t = new tree(s);
-			t->parentNode = &this;
-			leftNode = &t;
+			Tree *t = new Tree(s);
+			t->parentNode = this;
+			leftNode = t;
+			return t;
 		}
 
-		tree * addRightNode(std::string s)
+		Tree * addRightNode(std::string s)
 		{
-			tree *t = new tree(s);
-			t->parentNode = &this;//compiler said ->, learn why
-			rightNode = &t;
+			Tree *t = new Tree(s);
+			t->parentNode = this;
+			rightNode = t;
+			return t;
 		}
 
-		void giveParent(tree *parent)
+		void giveParent(Tree *parent)
 		{
 			parentNode = parent;
 		}
