@@ -42,12 +42,16 @@ class Tree
 		int evaulate()
 		{
 			if(parentNode == 0){
-				//perform acts of magic and wonderment
-				return 1;
+				return evalHelper(*this);
 			}else{
 				std::cout<<"not parent node, something wrong\n";
 				return 0; //dunno what to do for returning here
 			}
+		}
+		
+		int evalHelper(Tree t)
+		{
+			return 1;//holder
 		}
 
 		void checkAndPrint()
@@ -74,12 +78,6 @@ class Tree
 		}
 };
 
-//Initially parser will only do the opperations: + - * / and ()
-Tree * symbolState(char x, bool *error)
-{
-	std::cout<<x<<"\n";
-}
-
 int main()
 {
 	std::string eq;
@@ -88,9 +86,15 @@ int main()
 	bool error = (eq[0] > 47 && eq[0] < 58) || eq[0] == '(' ? 0 : 1;//make sure equation starts right
 	if(error)
 		std::cout<<"equation must start with a number or a (\n";
-	std::string number;
+
+	//variables for FSM
+	int numParaIn = 0;
+	std::string number = "";
 	int currentState;
 	int i = 0;
+	Tree *parent;
+	Tree *currentNode;
+	bool firstNode = false;
 	//FSM loop
 	while(!error)
 	{
@@ -128,13 +132,61 @@ int main()
 				}
 				case 1:
 				{
-					std::cout<<number<<std::endl;
-					symbolState(eq[i], &error);
+					if(eq[i] == '(' || eq[i] == ')')
+					{
+						if(firstNode)
+						{
+							char temp = eq[i];
+							currentNode = new Tree(std::string(&temp));
+							parent = currentNode;
+							firstNode = false;
+						}
+						if(i != 0 && (eq[i-1] > 47 && eq[i-1] < 58))
+						{
+							//multiply
+						}
+						numParaIn++;
+						break;
+					}
+					if(number != "")
+					{
+						if(firstNode)
+						{
+							currentNode = new Tree(number);
+							parent = currentNode;
+							firstNode = false;
+						}
+						currentNode = currentNode->addLeftNode(number);
+					}
+					switch(eq[i])
+					{
+						case '+':
+						{
+							break;
+						}
+						case '-':
+						{
+							break;
+						}
+						case '*':
+						{
+							break;
+						}
+						case '/':
+						{
+							break;
+						}
+					}
 					number = "";
 					break;
 				}
 			}
+			if(i == eq.length() && currentState == 0)
+			{
+				//number thing
+			}
 		}
 		i++;
 	}
+	parent->checkAndPrint();
 }
