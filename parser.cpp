@@ -150,13 +150,15 @@ int main()
 					}
 					if(number != "")
 					{
+						std::cout<<i<<"\n";
 						if(firstNode)
 						{
 							currentNode = new Tree(number);
 							parent = currentNode;
 							firstNode = false;
+						}else{
+							// currentNode = currentNode->addLeftNode(number);
 						}
-						currentNode = currentNode->addLeftNode(number);
 					}
 					switch(eq[i])
 					{
@@ -186,7 +188,9 @@ int main()
 				//number thing
 			}
 		}
+		std::cout<<&parent<<std::endl;
+		std::cout<<&currentNode<<std::endl;
 		i++;
 	}
-	parent->checkAndPrint();
+	// parent->checkAndPrint();
 }
