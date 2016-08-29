@@ -3,12 +3,11 @@
 
 class Tree
 {
-	private:
-		std::string nodeData;
 	public:
 		Tree *leftNode;
-		Tree *rightNode;
 		Tree *parentNode;
+		Tree *rightNode;
+		std::string nodeData;
 
 		Tree(std::string s)
 		{
@@ -39,19 +38,44 @@ class Tree
 			parentNode = parent;
 		}
 
-		int evaulate()
+		double evaulate()
 		{
 			if(parentNode == 0){
-				return evalHelper(*this);
+				return evalHelper(this);
 			}else{
 				std::cout<<"not parent node, something wrong\n";
 				return 0; //dunno what to do for returning here
 			}
 		}
 		
-		int evalHelper(Tree t)
+		double evalHelper(Tree *t)
 		{
-			return 1;//holder
+			std::string data = t->nodeData;
+			if(!(data == "+" || data == "-" || data == "*" || data == "/"))
+			{
+				int num = stoi(data);
+				return (double)num;
+			}
+			switch(data[0])
+			{
+				case '+':
+				{
+					return evalHelper(t->leftNode) + evalHelper(t->rightNode);
+				}
+				case '-':
+				{
+					return evalHelper(t->leftNode) - evalHelper(t->rightNode);
+				}
+				case '*':
+				{
+					return evalHelper(t->leftNode) * evalHelper(t->rightNode);
+				}
+				case '/':
+				{
+					return evalHelper(t->leftNode) / evalHelper(t->rightNode);
+				}
+			}
+			return 1;//what do?
 		}
 
 		void checkAndPrint()
@@ -66,7 +90,6 @@ class Tree
 
 		void printTree(Tree t)
 		{
-			std::cout<<t.nodeData<<"\n";
 			if(t.leftNode != 0){
 				std::cout<<"left: ";
 				printTree(*(t.leftNode));
@@ -88,23 +111,21 @@ int main()
 		std::cout<<"equation must start with a number or a (\n";
 
 	//variables for FSM
-	int numParaIn = 0;
-	std::string number = "";
+	Tree *currentNode;
+	Tree *parent;
+	bool firstNode = true;
 	int currentState;
 	int i = 0;
-	Tree *parent;
-	Tree *currentNode;
-	bool firstNode = false;
+	int numParaIn = 0;
+	std::string number = "";
 	//FSM loop
 	while(!error)
 	{
 		//check for end of equation
 		if(i == eq.length())
 		{
-			std::cout<<"end of equation\n";
 			error = 1;
 		}
-
 		if(!error)
 		{
 			//determine state of FSM
@@ -118,79 +139,93 @@ int main()
 				error = 1;
 			}
 		}
-
 		if(!error)
 		{
-			//execute state
 			switch(currentState)
 			{
 				case 0:
 				{
-					char temp = eq[i];
-					number.append(&temp);
+					number.append(std::string(1,eq[i]));
 					break;
 				}
 				case 1:
 				{
-					if(eq[i] == '(' || eq[i] == ')')
-					{
-						if(firstNode)
-						{
-							char temp = eq[i];
-							currentNode = new Tree(std::string(&temp));
-							parent = currentNode;
-							firstNode = false;
-						}
-						if(i != 0 && (eq[i-1] > 47 && eq[i-1] < 58))
-						{
-							//multiply
-						}
-						numParaIn++;
-						break;
-					}
-					if(number != "")
-					{
-						std::cout<<i<<"\n";
-						if(firstNode)
-						{
-							currentNode = new Tree(number);
-							parent = currentNode;
-							firstNode = false;
-						}else{
-							// currentNode = currentNode->addLeftNode(number);
-						}
-					}
+					// if(eq[i] == '(' || eq[i] == ')')    TODO support parenthesis
+					// {
+					// 	if(firstNode)
+					// 	{
+					// 		char temp = eq[i];
+					// 		currentNode = new Tree(std::string(&temp));
+					// 		parent = currentNode;
+					// 		firstNode = false;
+					// 	}
+					// 	if(i != 0 && (eq[i-1] > 47 && eq[i-1] < 58))
+					// 	{
+					// 		//multiply
+					// 	}
+					// 	numParaIn++;
+					// 	break;
+					// }
+					char opperation = eq[i];
 					switch(eq[i])
 					{
 						case '+':
-						{
-							break;
-						}
 						case '-':
 						{
+							if(firstNode)
+							{
+								parent = new Tree(number);
+								number = "";
+								firstNode = false;
+							}
+							if(number != "")
+							{
+								currentNode->addRightNode(number);
+								number = "";
+							}
+							Tree *temp = new Tree(std::string(1, opperation));
+							temp->leftNode = parent;
+							parent->giveParent(temp);
+							parent = temp;
+							currentNode = temp;
 							break;
 						}
 						case '*':
-						{
-							break;
-						}
 						case '/':
 						{
+							if(firstNode)
+							{
+								parent = new Tree(std::string(1, opperation));
+								currentNode = parent;
+								parent->addLeftNode(number);
+								firstNode = false;
+								number = "";
+								break;
+							}
+							currentNode = currentNode->addRightNode(std::string(1, opperation));
 							break;
 						}
 					}
-					number = "";
+					
+					if(number != "")
+					{
+						currentNode->addLeftNode(number);
+						number = "";
+					}
 					break;
 				}
 			}
-			if(i == eq.length() && currentState == 0)
+			if(i == eq.length()-1 && currentState == 0)
 			{
-				//number thing
+				if(firstNode)
+				{
+					parent = new Tree(number);
+					break;
+				}
+				currentNode = currentNode->addRightNode(number);
 			}
 		}
-		std::cout<<&parent<<std::endl;
-		std::cout<<&currentNode<<std::endl;
 		i++;
 	}
-	// parent->checkAndPrint();
+	std::cout<<std::fixed<<parent->evaulate()<<"\n";
 }
