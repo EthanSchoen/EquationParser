@@ -40,42 +40,55 @@ class Tree
 
 		double evaulate()
 		{
-			if(parentNode == 0){
-				return evalHelper(this);
-			}else{
-				std::cout<<"not parent node, something wrong\n";
-				return 0; //dunno what to do for returning here
-			}
+            try{
+		        if(parentNode == 0){
+		    		return evalHelper(this);
+		    	}else{
+		    		throw 0;
+		    	}
+            }catch(int i){
+				std::cout<<"not parent node\n";
+            }
+            return 0;
 		}
 		
 		double evalHelper(Tree *t)
 		{
 			std::string data = t->nodeData;
-			if(!(data == "+" || data == "-" || data == "*" || data == "/"))
-			{
-				int num = stoi(data);
-				return (double)num;
-			}
-			switch(data[0])
-			{
-				case '+':
-				{
-					return evalHelper(t->leftNode) + evalHelper(t->rightNode);
-				}
-				case '-':
-				{
-					return evalHelper(t->leftNode) - evalHelper(t->rightNode);
-				}
-				case '*':
-				{
-					return evalHelper(t->leftNode) * evalHelper(t->rightNode);
-				}
-				case '/':
-				{
-					return evalHelper(t->leftNode) / evalHelper(t->rightNode);
-				}
-			}
-			return 1;//what do?
+            try
+            {
+			    if(!(data == "+" || data == "-" || data == "*" || data == "/"))
+			    {
+			    	int num = stoi(data);
+			    	return (double)num;
+			    }
+			    switch(data[0])
+			    {
+			    	case '+':
+			    	{
+			    		return evalHelper(t->leftNode) + evalHelper(t->rightNode);
+			    	}
+			    	case '-':
+			    	{
+			    		return evalHelper(t->leftNode) - evalHelper(t->rightNode);
+			    	}
+			    	case '*':
+			    	{
+			    		return evalHelper(t->leftNode) * evalHelper(t->rightNode);
+			    	}
+			    	case '/':
+			    	{
+			    		return evalHelper(t->leftNode) / evalHelper(t->rightNode);
+			    	}
+                    default:
+                    {
+                        throw -1;
+                    }
+			    }
+            }catch(int e){
+                std::cout<<"invalid data in tree: "<<data<<std::endl;
+                return 0;
+            }
 		}
 
 		void checkAndPrint()
