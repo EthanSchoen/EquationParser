@@ -112,6 +112,40 @@ class Tree
                 printTree(*(t.rightNode));
 			}
 		}
+
+        void printGraph(std::string beforeR, std::string beforeL) {
+            bool right = (rightNode != 0) ? true : false;
+            bool left = (leftNode != 0) ? true : false;
+            std::cout<<nodeData<<"\n";
+            bool first = (beforeR.compare("") == 0) ? true : false;
+            if (right) {
+                int rightC = rightNode->countChildren();
+                if (left) {
+                    std::cout<<beforeR<<"|->";
+                } else {
+                    std::cout<<beforeR<<"`->";
+                }
+                if (first) {
+                    beforeR = "|  ";
+                } else {
+                    beforeR += "|  ";
+                }
+                rightNode->printGraph(beforeR, beforeR);
+            }
+            if (left) {
+                std::cout<<beforeL<<"`->";
+                beforeL += "   ";
+                leftNode->printGraph(beforeL, beforeL);
+            }
+        }
+
+        int countChildren() {
+            if (leftNode == 0 && rightNode == 0) return 1;
+            if (leftNode != 0 && rightNode != 0) return 1 + rightNode->countChildren() + leftNode->countChildren();
+            if (leftNode != 0) return 1 + leftNode->countChildren();
+            if (rightNode != 0) return 1 + rightNode->countChildren();
+            return -1000000;
+        }
 };
 
 int main()
@@ -229,5 +263,5 @@ int main()
 		i++;
 	}
 	std::cout<<std::fixed<<parent->evaulate()<<"\n";
-    parent->checkAndPrint();
+    parent->printGraph("", "");
 }
