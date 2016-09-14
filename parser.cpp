@@ -97,19 +97,19 @@ class Tree
 				printf("not parentNode\n");
 				return;
 			}
-			std::cout<<"parent: ";
+			std::cout<<"parent: "<<nodeData<<std::endl;
 			printTree(*this);
 		}
 
 		void printTree(Tree t)
 		{
 			if(t.leftNode != 0){
-				std::cout<<"left: ";
-				printTree(*(t.leftNode));
+				std::cout<<"left: "<<t.leftNode->nodeData<<std::endl;
+                printTree(*(t.leftNode));
 			}
 			if(t.rightNode != 0){
-				std::cout<<"right: ";
-				printTree(*(t.rightNode));
+				std::cout<<"right: "<<t.rightNode->nodeData<<std::endl;
+                printTree(*(t.rightNode));
 			}
 		}
 };
@@ -126,6 +126,7 @@ int main()
 	//variables for FSM
 	Tree *currentNode;
 	Tree *parent;
+    Tree *paraNode;
 	bool firstNode = true;
 	int currentState;
 	int i = 0;
@@ -163,22 +164,9 @@ int main()
 				}
 				case 1:
 				{
-					// if(eq[i] == '(' || eq[i] == ')')    TODO support parenthesis
-					// {
-					// 	if(firstNode)
-					// 	{
-					// 		char temp = eq[i];
-					// 		currentNode = new Tree(std::string(&temp));
-					// 		parent = currentNode;
-					// 		firstNode = false;
-					// 	}
-					// 	if(i != 0 && (eq[i-1] > 47 && eq[i-1] < 58))
-					// 	{
-					// 		//multiply
-					// 	}
-					// 	numParaIn++;
-					// 	break;
-					// }
+					if(eq[i] == '(' || eq[i] == ')')
+					{
+					}
 					char opperation = eq[i];
 					switch(eq[i])
 					{
@@ -241,4 +229,5 @@ int main()
 		i++;
 	}
 	std::cout<<std::fixed<<parent->evaulate()<<"\n";
+    parent->checkAndPrint();
 }
